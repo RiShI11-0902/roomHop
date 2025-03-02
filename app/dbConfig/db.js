@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const connection = async ()=>{
-    const connectionUrl = 'mongodb+srv://rishi:nrarVWGs6IJLpADk@cluster0.sirc6hl.mongodb.net/roomhop?retryWrites=true&w=majority'
+    const connectionUrl = process.env.DB_URL
 
     mongoose.connect((connectionUrl)).then(()=>console.log('App connected')).catch(error => console.log(error))
 }
