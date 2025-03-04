@@ -32,12 +32,16 @@ export default function Dashboard() {
     setLoading(true);
     try {
       const res = await axios.get(selectData?.url);
-      if (res.status == 200) {
+      console.log(res);
+      if (res.status == 200 && !res.data.message) {
         setRenderData(res.data.data);
-        setLoading(false);
+      }else{
+        setError(res.data.message)
       }
+      setLoading(false);
     } catch (error) {
-      setError(error);
+      console.log(error);
+      // setError(error);
       setLoading(false);
     }
   };
@@ -62,6 +66,11 @@ export default function Dashboard() {
     try {
       const res = await axios.post("/api/listroom", { formdata, islistingRoom:islistingRoom });
       console.log(res);
+      
+      // if(res.status == 200){
+      //   router.refresh()
+      // }
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -75,16 +84,17 @@ export default function Dashboard() {
             setislistingRoom={setislistingRoom}
             setSetopen={setSetopen}
             setSelectData={setSelectData}
+            setError={setError}
           />
         </div>
         <div className="w-fit mx-auto p-5 flex-1 ">
           <div className="topBar p-10">TopBar Contents</div>
-
+          { error  && <p>{error}</p>}
           <div className=" grid grid-cols-1 md:grid-cols-4 gap-5">
             {loading ? (
-              <Loader />
-            ) : (
-              Array.from({ length: 10 }).map((_, index) => {
+              <Loader className="animate-spin mx-auto w-full flex justify-center items-center" />
+            ) : ( !error &&
+              renderData?.map((ele, index) => {
                 return (
                   <Card
                     onClick={() => {
@@ -95,9 +105,9 @@ export default function Dashboard() {
                   >
                     <div className="mb-4">{"Icon"}</div>
                     <h3 className="text-xl font-semibold text-[#363062] mb-3">
-                      {"feature.title"}
+                      {ele.title}
                     </h3>
-                    <p className="text-[#363062]">{"feature.description"}</p>
+                    <p className="text-[#363062]">{ele.title}</p>
                   </Card>
                 );
               })

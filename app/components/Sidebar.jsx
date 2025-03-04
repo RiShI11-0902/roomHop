@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
 
-export default function Sidebar({ setSelectData, setSetopen, setislistingRoom }) {
+export default function Sidebar({ setSelectData, setSetopen, setislistingRoom, setError }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = (name, url) => {
@@ -33,21 +33,29 @@ export default function Sidebar({ setSelectData, setSetopen, setislistingRoom })
         </div>
 
         <ul className="space-y-5">
-          <li onClick={() => handleClick('browse-roommate', '/api/getroomates')} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
+          <li onClick={() =>{
+             handleClick('browse-roommate', '/api/getroomates')
+             setError("")
+          }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             Browse Room Mates
           </li>
-          <li onClick={() => handleClick('browse', '/api/getrooms')} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
+          <li onClick={() => {
+            handleClick('browse', '/api/getrooms')
+            setError("")
+          }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             Browse Rooms
           </li>
           <li onClick={() => {
             setislistingRoom(true)
             setSetopen(true)
+            setError("")
           }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             List your Room
           </li>
           <li onClick={() => {
             setSetopen(true)
             setislistingRoom(false)
+            setError("")
           }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             Roommate Request
           </li>

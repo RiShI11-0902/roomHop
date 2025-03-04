@@ -9,7 +9,6 @@ exports.roomDetails = [
     { name: "Add Image", label: "Add Image", type: "file", required: true },
     { name: "OtherPreference", label: "Other Preference", type: "textarea", placeholder: "Other Preference", required: true },
     { name: "Amenities", label: "Amenities", type: "textarea", placeholder: "Amenities", required: true },
-    
   ];
 
 //   exports.roomMateDetails = [
