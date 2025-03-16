@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu } from "lucide-react";
 
-export default function Sidebar({ setSelectData, setSetopen, setislistingRoom, setError }) {
+export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setError }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = (name, url) => {
@@ -47,13 +47,13 @@ export default function Sidebar({ setSelectData, setSetopen, setislistingRoom, s
           </li>
           <li onClick={() => {
             setislistingRoom(true)
-            setSetopen(true)
+            setOpen(true)
             setError("")
           }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             List your Room
           </li>
           <li onClick={() => {
-            setSetopen(true)
+            setOpen(true)
             setislistingRoom(false)
             setError("")
           }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">

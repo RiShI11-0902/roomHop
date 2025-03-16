@@ -2,9 +2,12 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter()
 
   return (
     <nav className="bg-gradient-to-br from-[#363062] to-[#4D4C7D] text-white shadow-md fixed w-full top-0 z-50">
@@ -23,9 +26,9 @@ export default function Navbar() {
         </div>
 
         {/* CTA Button */}
-        <Link href="#" className="hidden md:block bg-[#F99417] text-[#363062] px-6 py-2 rounded-lg font-semibold hover:bg-[#F5F5F5] transition">
+        <p onClick={()=> router.push("/login")} className="hidden md:block bg-[#F99417] text-[#363062] px-6 py-2 rounded-lg font-semibold hover:bg-[#F5F5F5] transition">
           Get Started
-        </Link>
+        </p>
 
         {/* Mobile Menu Button */}
         <button className="md:hidden text-white" onClick={() => setIsOpen(!isOpen)}>

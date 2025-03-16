@@ -4,6 +4,8 @@ const RoomSchema = new Schema(
   {
     listedBy: { type: String }, 
     title: { type: String, required: true }, 
+    contact: { type: Number, required: true }, 
+    email: { type: String, required: true }, 
     address: { type: String, required: true },
     rent: { type: Number, required: true },
     description: { type: String }, 
@@ -12,7 +14,8 @@ const RoomSchema = new Schema(
     availableFrom: { type: Date, required: true }, 
     genderPreference: { type: String, enum: ["Male", "Female", "Any"], default: "Any" }, 
     postedAt: { type: Date, default: Date.now }, 
-    isRoommateRequest: {type: Boolean}
+    isRoommateRequest: {type: Boolean},
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' }
   },
   { timestamps: true } 
 );
