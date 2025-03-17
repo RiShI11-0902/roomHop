@@ -64,7 +64,7 @@ export default function Dashboard() {
         <Sidebar setislistingRoom={setislistingRoom} setOpen={setOpen} setSelectData={setSelectData} setError={setError} />
         <div className="w-fit mx-auto p-5 flex-1">
           <div className="topBar p-10">
-            <FilterBar onFilterChange={(filters) => console.log(filters)} />
+            {/* <FilterBar onFilterChange={(filters) => console.log(filters)} /> */}
           </div>
           {error && <p>{error}</p>}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">

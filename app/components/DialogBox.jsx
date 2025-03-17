@@ -27,7 +27,8 @@ export default function DialogBox({ setOpen, open }) {
         isRoommateRequest: false,
         contact: "",
         preferences: "",
-        roommateAge: "",
+        ageRange: "",
+        geoCode:[]
       });
     
       // Handle text input changes
@@ -63,27 +64,35 @@ export default function DialogBox({ setOpen, open }) {
         
     
         const formDataToSend = new FormData();
+        const cld_img = new FormData()
         Object.keys(formData).forEach((key) => {
           if (key === "images") {
             if (formData.images) {
               Array.from(formData.images).forEach((file) => {
-                formDataToSend.append("images", file);
+                // formDataToSend.append("images", file);
+                cld_img.append("file", file)
               });
             }
           } else {
             formDataToSend.append(key, formData[key]);
           }
         });
+
+        cld_img.append('upload_preset', 'roomhop')
+        cld_img.append('cloud_name', "dogievntz" )
+
+        const sendImg = await axios.post("https://api.cloudinary.com/v1_1/dogievntz/image/upload", cld_img).then((data)=> formData.images = data.data.url)
+        
+        // const uploadUrl = await sendImg.json()
+        // console.log(uploadUrl);
+        
     
         try {
           const response = await axios.post("/api/listroom", formData)
     
           if (response.status == 200) {
             setFormData({
-              fullName: "",
               email: "",
-              phone: "",
-              age: "",
               gender: "",
               listedBy: "",
               title: "",
@@ -97,7 +106,10 @@ export default function DialogBox({ setOpen, open }) {
               isRoommateRequest: false,
               contact: "",
               preferences: "",
-              roommateAge: "",
+              ageRange:"",
+              country:"",
+              state:"",
+              city:""
             });
           } else {
             alert("Failed to submit.");
@@ -116,15 +128,16 @@ export default function DialogBox({ setOpen, open }) {
                 <main>
                     <div className="topBar flex flex-row justify-center items-center space-x-5 ">
                         {
-                            ["Your Details", "Room Details", "Other Details", "Add Image"].map((i, key) => {
+                            ["Your Details", "Room Details", "Other Details", "Add Image", "Mark Location"].map((i, key) => {
                                 return <div key={key} onClick={() => setselectedTab(i)} className={`text-[#F99417] border border-yellow-400 px-3 py-2 cursor-pointer rounded-2xl ${selectedTab == i ? "bg-yellow-400 text-white" : "hover:bg-yellow-200"}`}>{i}</div>
                             })
                         }
-                    </div>
+                    </div> 
                     <div className="mt-6 bg-white p-6 rounded-lg shadow-md space-y-4">
-                        {<FormRenderer handleCheckboxChange={handleCheckboxChange} formData={formData} handleChange={handleChange} handleFileChange={handleFileChange} type={selectedTab} />}
+                        {<FormRenderer handleCheckboxChange={handleCheckboxChange} formData={formData} handleChange={handleChange} type={selectedTab} handleFileChange={handleFileChange} />}
                     </div>
                 </main>
+                {/* ///handleFileChange={handleFileChange}  */}
                 <div className="flex flex-row justify-around items-center">
                     <div
                         className="text-red-700 cursor-pointer mt-4 text-center"
