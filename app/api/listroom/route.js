@@ -2,7 +2,7 @@ import connection from "@/app/dbConfig/db";
 import RoomModel from "@/app/models/rooms";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 
 export async function POST(req) {
   try {
@@ -32,9 +32,16 @@ export async function POST(req) {
       isRoommateRequest,
       contact,
       email,
+      geoCode,
+      ageRange,
+      country,
+      state,
+      city,
+      images
     } = body;
 
-    console.log(contact, email);
+     
+      console.log(images);
 
     const newRoom = await RoomModel({
       title,
@@ -47,8 +54,14 @@ export async function POST(req) {
       genderPreference,
       rent,
       address,
+      ageRange,
+      country,
+      state,
+      city,
       isRoommateRequest: isRoommateRequest,
-      createdBy: decoded.id
+      createdBy: decoded.id,
+      geoCode: geoCode,
+      images: images
     });
 
     await newRoom.save();

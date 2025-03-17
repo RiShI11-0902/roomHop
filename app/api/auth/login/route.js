@@ -13,10 +13,13 @@ export async function POST(req) {
     
     const { email, password } = await req.json();
 
+    console.log(email,password);
+    
+
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
-      return NextResponse.json({ error: "Invalid credentials" }, { status: 400 });
+      return NextResponse.json({ error: "User Not Found" }, { status: 400 });
     }
 
     // Validate password

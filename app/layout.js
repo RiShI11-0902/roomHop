@@ -1,5 +1,5 @@
 "use client";
-import { SessionProvider } from "next-auth/react";
+// import { SessionProvider } from "next-auth/react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -22,7 +22,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={` antialiased`}>
-        <SessionProvider>{children}</SessionProvider> {/* ✅ Wrap children inside SessionProvider */}
+        {children} {/* ✅ Wrap children inside SessionProvider */}
       </body>
     </html>
   );

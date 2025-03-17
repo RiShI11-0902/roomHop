@@ -1,32 +1,35 @@
 "use client";
-import { signIn, useSession } from "next-auth/react";
+import axios from "axios";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function LoginPage() {
-  const { data: session, status } = useSession();
-  console.log(session);
-  
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-
   const handleLogin = async (e) => {
     e.preventDefault();
-    const res = await signIn("credentials", {
-      email,
-      password,
-      redirect: false, // Prevents default redirection
-    });
+    try {
+      const res = await axios.post("/api/auth/login", { email, password });
 
-    if (res?.error) {
-      setError("Invalid Credentials");
-    } else {
-      router.push("/dashboard"); // Redirect to dashboard after successful login
+      // If login is successful, redirect to dashboard
+      if (res.status === 200) {
+        router.push("/dashboard");
+      }
+    } catch (err) {
+      console.log(err);
+      
+      if (err.response && err.response.status === 400) {
+        setError(err.response.data.error);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
     }
   };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-[#363062] to-[#4D4C7D]">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
