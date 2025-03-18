@@ -7,6 +7,7 @@ import Sidebar from "../components/Sidebar";
 import { Loader } from "lucide-react";
 import DialogBox from "../components/DialogBox";
 import FilterBar from "../components/FilterBar";
+import { ShimmerEffect } from "../components/ShimmerEffect";
 
 export default function Dashboard() {
   const [selectData, setSelectData] = useState({
@@ -64,12 +65,13 @@ export default function Dashboard() {
         <Sidebar setislistingRoom={setislistingRoom} setOpen={setOpen} setSelectData={setSelectData} setError={setError} />
         <div className="w-fit mx-auto p-5 flex-1">
           <div className="topBar p-10">
-            {/* <FilterBar onFilterChange={(filters) => console.log(filters)} /> */}
+            <FilterBar onFilterChange={(filters) => console.log(filters)} />
           </div>
           {error && <p>{error}</p>}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-5">
             {loading ? (
-              <Loader className="animate-spin mx-auto w-full flex justify-center items-center" />
+              // <Loader className="animate-spin mx-auto w-full flex justify-center items-center" />
+              <ShimmerEffect />
             ) : (
               !error &&
               renderData?.map((ele, index) => (

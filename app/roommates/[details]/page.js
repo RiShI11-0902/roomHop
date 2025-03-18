@@ -11,6 +11,7 @@ export default function SingleRoomMateDetails({ params }) {
   const router = useRouter();
   const [roomDetails, setRoomDetails] = useState(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getRoomDetails = async () => {
@@ -25,6 +26,7 @@ export default function SingleRoomMateDetails({ params }) {
 
         if (response.status === 200 && response.data.room) {
           setRoomDetails(response.data.room);
+          setLoading(false);
         } else {
           setError(response.data.message || "Room details not found.");
         }
@@ -47,20 +49,23 @@ export default function SingleRoomMateDetails({ params }) {
   return (
     <>
       <Navbar />
-      <section className="p-10 md:p-32 bg-gradient-to-br from-[#363062] to-[#4D4C7D] text-white">
+      <section className={`p-10 md:p-32 bg-gradient-to-br from-[#363062] to-[#4D4C7D] text-white ${loading ? 'h-screen' : "h-full"}`}>
+
+        {
+          loading && <div className="grid grid-cols-2 gap-5 mx-auto w-fit">
+            <div className="div bg-gray-200 w-80 animate-pulse h-52"></div>
+            <div className="div bg-gray-200 w-80 animate-pulse h-52"></div>
+            <div className="div bg-gray-200 animate-pulse h-52 col-span-2"></div>
+          </div>
+        }
+
         <div className="flex flex-col md:flex-row justify-center items-center gap-10 ">
           {/* Left - Roommate Image */}
           <div className="w-full md:w-1/2 flex flex-col justify-center items-center ">
-            {roomDetails?.images ? (
+            {roomDetails?.images && (
               <img
                 src={roomDetails.images} // Display the first image
                 alt="Room"
-                className="rounded-lg shadow-lg w-full md:w-96 h-auto"
-              />
-            ) : (
-              <img
-                src="https://picsum.photos/300/300" // Fallback Image
-                alt="Roommate"
                 className="rounded-lg shadow-lg w-full md:w-96 h-auto"
               />
             )}
@@ -108,16 +113,13 @@ export default function SingleRoomMateDetails({ params }) {
                     {new Date(roomDetails.postedAt).toDateString()}
                   </p>
                   <p>
-                    <strong>📆 Country:</strong>{" "}
-                    {roomDetails.country}
+                    <strong>📆 Country:</strong> {roomDetails.country}
                   </p>
                   <p>
-                    <strong>📆 State:</strong>{" "}
-                    {roomDetails.state}
+                    <strong>📆 State:</strong> {roomDetails.state}
                   </p>
                   <p>
-                    <strong>📆 City:</strong>{" "}
-                    {roomDetails.city}
+                    <strong>📆 City:</strong> {roomDetails.city}
                   </p>
                   <p>
                     <strong>🛠 Amenities:</strong>{" "}
@@ -130,7 +132,7 @@ export default function SingleRoomMateDetails({ params }) {
                 {/* Map Section */}
               </>
             ) : (
-              <p className="text-gray-300">Loading room details...</p>
+              <div className="w-full md:w-1/2 space-y-4 bg-gray-200 animate-pulse"></div>
             )}
           </div>
         </div>
@@ -160,6 +162,7 @@ export default function SingleRoomMateDetails({ params }) {
             <p className="text-gray-400 text-sm">No location data available.</p>
           )}
         </div>
+
         <div className="flex flex-row space-x-5 mt-5 items-center justify-center">
           <button
             onClick={() => router.back()}
@@ -168,6 +171,7 @@ export default function SingleRoomMateDetails({ params }) {
             Go Back
           </button>
         </div>
+
       </section>
     </>
   );
