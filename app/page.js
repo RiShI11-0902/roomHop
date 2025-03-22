@@ -1,10 +1,7 @@
-// import { Button } from "@/components/ui/button";
-// import { Button } from "@/components/ui/button"
-
-// import { Card } from "@/components/ui/card";
 import { Users, Shield, Search } from "lucide-react";
-import Image from "next/image";
 import Navbar from "./components/Navbar";
+import Link from "next/link";
+
 
 export default function Home() {
   return (
@@ -26,14 +23,14 @@ export default function Home() {
               <div className="flex gap-4 justify-center">
                 <button
                   size="lg"
-                  className="bg-[#F99417] hover:bg-[#F5F5F5] text-[#363062] px-8"
+                  className="bg-[#F99417] py-3 rounded-2xl hover:bg-[#F5F5F5] text-[#363062] px-8"
                 >
                   Find Roommates
                 </button>
                 <button
                   size="lg"
                   variant="outline"
-                  className="text-[#363062] bg-[#F99417] border-[#F99417] hover:bg-[#F5F5F5] "
+                  className="text-[#363062] px-8 rounded-2xl bg-[#F99417] border-[#F99417] hover:bg-[#F5F5F5] "
                 >
                   List Your Space
                 </button>
@@ -72,12 +69,12 @@ export default function Home() {
               Join thousands of happy roommates who found their perfect match
               through RoomMatch.
             </p>
-            <button
+            <Link href={"/register"}
               size="lg"
-              className="bg-[#363062] text-[#F5F5F5] hover:bg-[#4D4C7D] px-8"
+              className="bg-[#363062] cursor-pointer text-[#F5F5F5] hover:bg-[#4D4C7D] px-8"
             >
               Get Started Now
-            </button>
+            </Link>
           </div>
         </section>
       </div>

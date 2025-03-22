@@ -1,58 +1,54 @@
+import { Search, User2 } from "lucide-react";
 import { useState } from "react";
-import { User2Icon, Search } from "lucide-react";
-import { UserProfile } from "./UserProfile";
+import UserProfile from "./UserProfile"; // Assuming you have a UserProfile component
 
-export default function FilterBar({ onFilterChange, filters, setFilters }) {
-  const [openProfile, setOpenProfile] = useState(false);
-
-  // Handle input changes but don't apply filters yet
-  const handleFilterChange = (e) => {
-    const { name, value } = e.target;
-    setFilters((prev) => ({ ...prev, [name]: value }));
-  };
-
-  // Trigger filter when Search button is clicked
-  const handleSearch = () => {
-    onFilterChange(filters);
-  };
+export default function TopBar({ filters, handleFilterChange, onFilterChange, setOpenProfile }) {
+  const [openProfile, setOpenProfileState] = useState(false);
 
   return (
-    <div className="topBar p-5 bg-white shadow-lg rounded-lg flex flex-col md:flex-row items-center justify-between gap-4">
-      <input
-        type="text"
-        name="country"
-        placeholder="Country"
-        value={filters.country}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+    <div className="topBar bg-white shadow-lg rounded-lg p-5 flex flex-col md:flex-row items-center gap-4 w-full">
+      
+      {/* Filters Section */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:gap-4 w-full">
+        {/* Country Input */}
+        <input
+          type="text"
+          name="country"
+          placeholder="Country"
+          value={filters.country}
+          onChange={handleFilterChange}
+          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
 
-      <input
-        type="text"
-        name="state"
-        placeholder="State"
-        value={filters.state}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+        {/* State Input */}
+        <input
+          type="text"
+          name="state"
+          placeholder="State"
+          value={filters.state}
+          onChange={handleFilterChange}
+          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
 
-      <input
-        type="text"
-        name="city"
-        placeholder="City"
-        value={filters.city}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+        {/* City Input */}
+        <input
+          type="text"
+          name="city"
+          placeholder="City"
+          value={filters.city}
+          onChange={handleFilterChange}
+          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        />
+      </div>
 
-      {/* 💰 Rent Range Filter with Currency Selection */}
-      <div className="flex items-center gap-2">
+      {/* Rent Range Filter with Currency Selection */}
+      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
         {/* Currency Selector */}
         <select
           name="currency"
           value={filters.currency}
           onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg text-sm"
+          className="border border-gray-300 px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           <option value="INR">₹ (INR)</option>
           <option value="USD">$ (USD)</option>
@@ -65,7 +61,7 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
           placeholder="Min Price"
           value={filters.rentMin}
           onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
+          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
         <span className="text-gray-600">-</span>
 
@@ -76,23 +72,32 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
           placeholder="Max Price"
           value={filters.rentMax}
           onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
+          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
+      {/* Search Button */}
       <button
-        onClick={()=> onFilterChange(filters)}
-        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        onClick={() => onFilterChange(filters)}
+        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none"
       >
         <Search size={18} />
         Search
       </button>
 
-      <div className="user bg-gray-100 p-2 rounded-full cursor-pointer">
-        <User2Icon onClick={() => setOpenProfile(true)} className="text-gray-600" />
+      {/* User Profile Section */}
+      <div
+        // className="user bg-gray-100 p-2 rounded-full cursor-pointer hover:bg-gray-200 transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none"
+        tabIndex="0"
+        onClick={() => setOpenProfileState(true)}
+        onKeyDown={(e) => e.key === "Enter" && setOpenProfileState(true)}
+        role="button"
+        aria-label="Open Profile"
+      >
+        {/* <User2 className="text-gray-600" /> */}
+        <UserProfile setOpenProfile={setOpenProfileState} />
       </div>
 
-      {openProfile && <UserProfile setOpenProfile={setOpenProfile} />}
     </div>
   );
 }
