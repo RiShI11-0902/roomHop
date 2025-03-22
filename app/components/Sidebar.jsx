@@ -25,7 +25,7 @@ export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setE
 
       {/* Sidebar */}
       <section
-        className={`fixed top-0 left-0 h-screen w-64 bg-gradient-to-tl from-[#363062] to-[#4D4C7D] border-r border-black p-5 text-[#F99417] text-xl transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+        className={`fixed top-0 left-0 h-screen w-64 bg-gradient-to-tl from-[#363062] to-[#4D4C7D] border-r border-black p-5 text-[#F99417] text-xl transform  ${isOpen ? "translate-x-0" : "-translate-x-full"
           } transition-transform md:translate-x-0 md:w-72 md:relative`}
       >
         <div className="mb-10 mt-20">
@@ -51,13 +51,6 @@ export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setE
             setError("")
           }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
             List your Room
-          </li>
-          <li onClick={() => {
-            setOpen(true)
-            setislistingRoom(false)
-            setError("")
-          }} className="hover:bg-[#4D4C7D] rounded-xl p-3 cursor-pointer">
-            Roommate Request
           </li>
         </ul>
       </section>

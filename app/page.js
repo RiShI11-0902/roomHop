@@ -1,5 +1,7 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Button } from "@/components/ui/button"
+
+// import { Card } from "@/components/ui/card";
 import { Users, Shield, Search } from "lucide-react";
 import Image from "next/image";
 import Navbar from "./components/Navbar";
@@ -22,19 +24,19 @@ export default function Home() {
                 like-minded people ready to share their space with you.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button
+                <button
                   size="lg"
                   className="bg-[#F99417] hover:bg-[#F5F5F5] text-[#363062] px-8"
                 >
                   Find Roommates
-                </Button>
-                <Button
+                </button>
+                <button
                   size="lg"
                   variant="outline"
                   className="text-[#363062] bg-[#F99417] border-[#F99417] hover:bg-[#F5F5F5] "
                 >
                   List Your Space
-                </Button>
+                </button>
               </div>
             </div>
           </div>
@@ -48,13 +50,13 @@ export default function Home() {
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {features.map((feature, index) => (
-                <Card key={index} className="bg-[#F5F5F5] border-none p-6">
+                <div key={index} className="bg-[#F5F5F5] border-none p-6">
                   <div className="mb-4">{feature.icon}</div>
                   <h3 className="text-xl font-semibold text-[#363062] mb-3">
                     {feature.title}
                   </h3>
                   <p className="text-[#363062]">{feature.description}</p>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
@@ -70,12 +72,12 @@ export default function Home() {
               Join thousands of happy roommates who found their perfect match
               through RoomMatch.
             </p>
-            <Button
+            <button
               size="lg"
               className="bg-[#363062] text-[#F5F5F5] hover:bg-[#4D4C7D] px-8"
             >
               Get Started Now
-            </Button>
+            </button>
           </div>
         </section>
       </div>

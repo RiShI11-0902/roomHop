@@ -18,7 +18,6 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
 
   return (
     <div className="topBar p-5 bg-white shadow-lg rounded-lg flex flex-col md:flex-row items-center justify-between gap-4">
-      {/* 🌍 Country Filter */}
       <input
         type="text"
         name="country"
@@ -28,7 +27,6 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
         className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
       />
 
-      {/* 🏙️ State Filter */}
       <input
         type="text"
         name="state"
@@ -38,7 +36,6 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
         className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
       />
 
-      {/* 🏡 City Filter */}
       <input
         type="text"
         name="city"
@@ -59,8 +56,6 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
         >
           <option value="INR">₹ (INR)</option>
           <option value="USD">$ (USD)</option>
-          <option value="EUR">€ (EUR)</option>
-          <option value="GBP">£ (GBP)</option>
         </select>
 
         {/* Min Rent */}
@@ -85,20 +80,9 @@ export default function FilterBar({ onFilterChange, filters, setFilters }) {
         />
       </div>
 
-      <select
-        name="genderPreference"
-        value={filters.genderPreference}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg"
-      >
-        <option value="">Any Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-
       <button
-        onClick={handleSearch}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        onClick={()=> onFilterChange(filters)}
+        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2"
       >
         <Search size={18} />
         Search
