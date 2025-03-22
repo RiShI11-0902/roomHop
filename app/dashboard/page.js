@@ -2,7 +2,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Card } from "@/components/ui/card";
 import Sidebar from "../components/Sidebar";
 import { Loader } from "lucide-react";
 import DialogBox from "../components/DialogBox";
@@ -21,21 +20,20 @@ export default function Dashboard() {
   const [open, setOpen] = useState();
   const [islistingRoom, setislistingRoom] = useState();
   const [filters, setFilters] = useState({
-    country: "",
-    state: "",
-    city: "",
-    rentMin: "",
-    rentMax: "",
-    genderPreference: "",
-    currency: "",
+    country: null,
+    state: null,
+    city: null,
+    rentMin: null,
+    rentMax: null,
+    genderPreference: null,
+    currency: null,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalRooms, setTotalRooms] = useState()
-  const [totalPages, settotalPages] = useState()
+  const [totalRooms, setTotalRooms] = useState();
+  const [totalPages, settotalPages] = useState();
 
   const router = useRouter();
 
-  // 🔹 Check authentication when the component mounts
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -60,9 +58,10 @@ export default function Dashboard() {
         setOriginalData(res.data.data);
         setFilteredData(res.data.data);
         // setTotalRooms(res.data.totalRooms)
-        settotalPages(Math.ceil(res.data.totalRooms / 4))
+        settotalPages(Math.ceil(res.data.totalRooms / 4));
         console.log(totalPages);
-        
+        console.log(originalData);
+        console.log(filteredData);
       } else {
         setError(res.data.message);
       }
@@ -74,33 +73,28 @@ export default function Dashboard() {
   };
 
   const onFilterChange = (filter) => {
+    console.log("called");
+    
     console.log(filter);
+  
+    // Check if all filters are empty
+    const allFieldsEmpty = Object.values(filter).every(
+      (value) => !value || value.trim() === ""
+    );
 
-    if (
-      filter.country == "" &&
-      filter.state == "" &&
-      filter.city == "" &&
-      filter.rentMax &&
-      filter.currency
-    ) {
-      console.log(originalData);
-
+    console.log(allFieldsEmpty);
+    
+  
+    if (allFieldsEmpty) {
+      console.log("All fields are empty, resetting data", originalData);
       setFilteredData(originalData);
       return;
     }
-
-    // const newData = filteredData.filter((ele) => {
-    //   return (
-    //     (filter.country && ele.country?.toLowerCase() === filter.country.toLowerCase()) ||
-    //     (filter.state && ele.state?.toLowerCase() === filter.state.toLowerCase()) ||
-    //     (filter.city && ele.city?.toLowerCase() === filter.city.toLowerCase())
-    //   );
-    // });
-
-    // console.log(newData);
-
-    setFilteredData(newData);
+  
+    console.log("Fetching data with filters");
+    fetchData(); // Call fetchData only when filters are applied
   };
+  
 
   useEffect(() => {
     fetchData();
@@ -109,7 +103,6 @@ export default function Dashboard() {
   const handlePageChange = (val) => {
     // console.log(currentPage);
     console.log(totalPages);
-
 
     if (val == -1 && currentPage != 1) {
       console.log(currentPage);
@@ -144,50 +137,54 @@ export default function Dashboard() {
             ) : (
               !error &&
               filteredData?.map((ele, index) => (
-                <Card
+                <div
                   key={index}
                   onClick={() =>
                     router.push(`/roommates/${ele._id ? ele._id : index}`)
                   }
-                  className="max-w-80 cursor-pointer p-5"
+                  className="max-w-80 cursor-pointer p-5 border border-gray-200 shadow-md shadow-gray-300 rounded-lg"
                 >
                   <div className="mb-4">{"Icon"}</div>
                   <h3 className="text-xl font-semibold text-[#363062] mb-3">
                     {ele.title}
                   </h3>
                   <p className="text-[#363062]">{ele.description}</p>
-                </Card>
+                </div>
               ))
             )}
           </div>
 
-         {
-          filteredData?.length > 0 &&  <div className="flex items-center justify-center gap-4 mt-5">
-          { currentPage != 1 ?
-            <button
-              className={`px-4 py-2 rounded-lg border ${
-                currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-              }`}
-              onClick={() => handlePageChange(-1)}
-            >
-              Previous
-            </button> : ""
-          }
+          {filteredData?.length > 0 && (
+            <div className="flex items-center justify-center gap-4 mt-5">
+              {currentPage != 1 ? (
+                <button
+                  className={`px-4 py-2 rounded-lg border ${
+                    currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                  onClick={() => handlePageChange(-1)}
+                >
+                  Previous
+                </button>
+              ) : (
+                ""
+              )}
 
-          <p className="text-lg">Current Page: {currentPage}</p>
+              <p className="text-lg">Current Page: {currentPage}</p>
 
-          { totalPages != currentPage ?
-          <button
-            className={`px-4 py-2 rounded-lg border ${
-              currentPage === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => handlePageChange(1)}
-          >
-            Next
-          </button> : " "
-          }
-        </div>
-         }
+              {totalPages != currentPage ? (
+                <button
+                  className={`px-4 py-2 rounded-lg border ${
+                    currentPage === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                  onClick={() => handlePageChange(1)}
+                >
+                  Next
+                </button>
+              ) : (
+                " "
+              )}
+            </div>
+          )}
         </div>
       </section>
       <DialogBox open={open} setOpen={setOpen} />

@@ -11,6 +11,7 @@ const RoomSchema = new Schema(
     state:{type:String},
     city:{type:String},
     rent: { type: Number },
+    currency:{type: String},
     description: { type: String }, 
     amenities: { type: [String] }, 
     images: { type: String },

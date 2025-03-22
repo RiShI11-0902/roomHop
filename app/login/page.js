@@ -62,15 +62,7 @@ export default function LoginPage() {
           >
             Login
           </button>
-        </form>
-
-        <div className="text-center my-4">OR</div>
-        <button 
-          onClick={() => signIn("google", { callbackUrl: "/dashboard" })} 
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition"
-        >
-          Login with Google
-        </button>
+        </form>       
       </div>
     </div>
   );

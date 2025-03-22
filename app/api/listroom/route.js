@@ -37,11 +37,12 @@ export async function POST(req) {
       country,
       state,
       city,
-      images
+      images,
+      currency
     } = body;
 
      
-      console.log(images);
+      console.log(currency);
 
     const newRoom = await RoomModel({
       title,
@@ -53,6 +54,7 @@ export async function POST(req) {
       listedBy,
       genderPreference,
       rent,
+      currency,
       address,
       ageRange,
       country,
