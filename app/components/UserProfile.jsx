@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2, Eye, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-// import { cookies } from "next/headers";
+// import {useCookies} from 'next-client-headers'
+// import { useCookies } from 'next-client-cookies';
 
 
 export function UserProfile({ setOpenProfile }) {
@@ -31,16 +32,25 @@ export function UserProfile({ setOpenProfile }) {
     fetchUserRooms();
   }, []);
 
-  const deleteRoom = async (roomId) => {
+  const deleteRoom = async (id) => {
     if (!confirm("Are you sure you want to delete this room?")) return;
 
     try {
-      await axios.delete(`/api/delete-room/${roomId}`);
-      setUserRooms(userRooms.filter((room) => room._id !== roomId));
+      await axios.post(`/api/deleteRoom`, {id});
+      setUserRooms(userRooms.filter((room) => room._id !== id));
     } catch (err) {
       alert("Failed to delete room.");
     }
   };
+
+  const logout = async ()=>{
+  try {
+    await axios.get("/api/auth/logout")
+    window.location.href("/")
+  } catch (error) {
+    console.log(error);
+  }
+  }
 
   return (
     <>
@@ -54,7 +64,7 @@ export function UserProfile({ setOpenProfile }) {
           setOpenBox(true)
           // setOpenProfile(false)
         }}>My Rooms</li>
-        <li className="cursor-pointer">Log Out</li>
+        <li onClick={logout} className="cursor-pointer">Log Out</li>
       </ul>
 
     </div>
@@ -84,9 +94,9 @@ export function UserProfile({ setOpenProfile }) {
                     <p className="text-sm">Rent: ₹{room.rent}</p>
                   </div>
                   <div className="flex gap-3">
-                    <button onClick={() => router.push(`/room/${room._id}`)}>
+                    {/* <button onClick={() => router.push(`/room/${room._id}`)}>
                       <Eye className="text-blue-500" />
-                    </button>
+                    </button> */}
                     <button onClick={() => deleteRoom(room._id)}>
                       <Trash2 className="text-red-500" />
                     </button>
