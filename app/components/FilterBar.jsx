@@ -1,61 +1,90 @@
 import { useState } from "react";
-import { User2Icon, Search, Filter } from "lucide-react";
+import { User2Icon, Search } from "lucide-react";
 import { UserProfile } from "./UserProfile";
 
-export default function FilterBar({ onFilterChange }) {
-    const [openProfile, setOpenProfile] = useState(false)
-    const [filters, setFilters] = useState({
-        location: "",
-        rentMin: "",
-        rentMax: "",
-        genderPreference: "",
-        amenities: [],
-    });
+export default function FilterBar({ onFilterChange, filters, setFilters }) {
+  const [openProfile, setOpenProfile] = useState(false);
 
+  // Handle input changes but don't apply filters yet
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
-    onFilterChange && onFilterChange({ ...filters, [name]: value });
   };
-  
+
+  // Trigger filter when Search button is clicked
+  const handleSearch = () => {
+    onFilterChange(filters);
+  };
 
   return (
     <div className="topBar p-5 bg-white shadow-lg rounded-lg flex flex-col md:flex-row items-center justify-between gap-4">
-      {/* 🔍 Search Bar */}
-      <div className="flex items-center border border-gray-300 rounded-lg px-3 py-2 w-full md:w-auto">
-        <Search className="text-gray-500" size={18} />
-        <input
-          type="text"
-          name="location"
-          placeholder="Search by location..."
-          value={filters.location}
-          onChange={handleFilterChange}
-          className="outline-none bg-transparent ml-2 w-full"
-        />
-      </div>
+      {/* 🌍 Country Filter */}
+      <input
+        type="text"
+        name="country"
+        placeholder="Country"
+        value={filters.country}
+        onChange={handleFilterChange}
+        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
+      />
 
-      {/* 💰 Rent Range Filter */}
+      {/* 🏙️ State Filter */}
+      <input
+        type="text"
+        name="state"
+        placeholder="State"
+        value={filters.state}
+        onChange={handleFilterChange}
+        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
+      />
+
+      {/* 🏡 City Filter */}
+      <input
+        type="text"
+        name="city"
+        placeholder="City"
+        value={filters.city}
+        onChange={handleFilterChange}
+        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
+      />
+
+      {/* 💰 Rent Range Filter with Currency Selection */}
       <div className="flex items-center gap-2">
+        {/* Currency Selector */}
+        <select
+          name="currency"
+          value={filters.currency}
+          onChange={handleFilterChange}
+          className="border border-gray-300 px-3 py-2 rounded-lg text-sm"
+        >
+          <option value="INR">₹ (INR)</option>
+          <option value="USD">$ (USD)</option>
+          <option value="EUR">€ (EUR)</option>
+          <option value="GBP">£ (GBP)</option>
+        </select>
+
+        {/* Min Rent */}
         <input
           type="number"
           name="rentMin"
-          placeholder="Min ₹"
+          placeholder="Min Price"
           value={filters.rentMin}
           onChange={handleFilterChange}
           className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
         />
         <span className="text-gray-600">-</span>
+
+        {/* Max Rent */}
         <input
           type="number"
           name="rentMax"
-          placeholder="Max ₹"
+          placeholder="Max Price"
           value={filters.rentMax}
           onChange={handleFilterChange}
           className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
         />
       </div>
 
-      {/* 🎯 Gender Preference Filter */}
       <select
         name="genderPreference"
         value={filters.genderPreference}
@@ -67,28 +96,19 @@ export default function FilterBar({ onFilterChange }) {
         <option value="Female">Female</option>
       </select>
 
-      {/* 🛠 Amenities Filter */}
-      <select
-        name="amenities"
-        value={filters.amenities}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg"
+      <button
+        onClick={handleSearch}
+        className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
       >
-        <option value="">Select Amenities</option>
-        <option value="WiFi">WiFi</option>
-        <option value="AC">AC</option>
-        <option value="Parking">Parking</option>
-        <option value="Gym">Gym</option>
-      </select>
+        <Search size={18} />
+        Search
+      </button>
 
-      {/* 👤 User Icon */}
       <div className="user bg-gray-100 p-2 rounded-full cursor-pointer">
-        <User2Icon onClick={()=>setOpenProfile(true)} className="text-gray-600" />
+        <User2Icon onClick={() => setOpenProfile(true)} className="text-gray-600" />
       </div>
 
-      {
-        openProfile && <UserProfile setOpenProfile={setOpenProfile} />
-      }
+      {openProfile && <UserProfile setOpenProfile={setOpenProfile} />}
     </div>
   );
 }
