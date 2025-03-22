@@ -49,7 +49,7 @@ export default function SingleRoomMateDetails({ params }) {
   return (
     <>
       <Navbar />
-      <section className={`p-10 md:p-32 bg-gradient-to-br from-[#363062] to-[#4D4C7D] text-white ${loading ? 'h-screen' : "h-full"}`}>
+      <section className={`p-10 md:p-32 bg-gradient-to-br from-[#363062] to-[#4D4C7D] text-white mt-10 md:mt-0 ${loading ? 'h-screen' : "h-full"}`}>
 
         {
           loading && <div className="grid grid-cols-2 gap-5 mx-auto w-fit">
@@ -59,9 +59,9 @@ export default function SingleRoomMateDetails({ params }) {
           </div>
         }
 
-        <div className="flex flex-col md:flex-row justify-center items-center gap-10 ">
+        <div className="flex flex-col md:grid md:grid-cols-2 justify-center items-center  ">
           {/* Left - Roommate Image */}
-          <div className="w-full md:w-1/2 flex flex-col justify-center items-center ">
+          <div className="w-full flex flex-col justify-center items-center ">
             {roomDetails?.images && (
               <img
                 src={roomDetails.images} // Display the first image
@@ -71,13 +71,12 @@ export default function SingleRoomMateDetails({ params }) {
             )}
           </div>
 
-          {/* Right - Roommate Details */}
-          <div className="w-full md:w-1/2 space-y-4">
+          <div className="w-full  space-y-4 ">
             {error ? (
               <p className="text-red-500">{error}</p>
             ) : roomDetails ? (
               <>
-                <h1 className="text-3xl font-bold text-[#F99417]">
+                <h1 className="text-3xl font-bold mt-5 md:mt-0 text-[#F99417]">
                   {roomDetails.title}
                 </h1>
                 <p className="text-lg text-gray-200">
@@ -98,7 +97,7 @@ export default function SingleRoomMateDetails({ params }) {
                     <strong>📍 Email:</strong> {roomDetails.email}
                   </p>
                   <p>
-                    <strong>💰 Rent:</strong> ₹{roomDetails.rent}
+                    <strong>💰 Rent:</strong> {roomDetails.currency == 'rupees' ? '₹' : '$' } {roomDetails.rent}
                   </p>
                   <p>
                     <strong>🎯 Gender Preference:</strong>{" "}
@@ -137,9 +136,9 @@ export default function SingleRoomMateDetails({ params }) {
           </div>
         </div>
 
-        <div className="map w-1/2 mx-auto">
+        <div className="map md:w-1/2 mx-auto">
           {roomDetails?.geoCode?.[0] && roomDetails?.geoCode?.[1] ? (
-            <div className="w-full h-[300px] mt-5 rounded-lg overflow-hidden border border-gray-500">
+            <div className="w-full h-[300px]  mt-5 rounded-lg overflow-hidden border border-gray-500">
               <MapContainer
                 center={roomDetails?.geoCode}
                 zoom={15}
