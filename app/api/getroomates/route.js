@@ -13,11 +13,12 @@ export async function POST(req) {
     if(filters.country) query.country =  filters.country
     if(filters.state) query.state =  filters.state
     if(filters.city) query.city =  filters.city
-    if(filters.rentMin) query.rent =  filters.rentMin
+    if(filters.rentMax) query.rent =  filters.rentMax
+    if(filters.currency) query.currency =  filters.currency
+
 
     console.log("query is",query);
     
-
     query.isRoommateRequest = true
     
     const skip = (currentPage - 1) * 4

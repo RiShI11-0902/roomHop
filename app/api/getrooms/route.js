@@ -15,8 +15,10 @@ export async function  POST(req) {
         if(filters.country) query.country =  filters.country
         if(filters.state) query.state =  filters.state
         if(filters.city) query.city =  filters.city
-        if(filters.rent) query.rent =  filters.rent
+        if(filters.rentMax) query.rent =  {$lte: filters.rentMax}
+        if(filters.currency) query.currency =  filters.currency
 
+        console.log(query);
         query.isRoommateRequest = false
         
         const skip = (currentPage - 1) * 4
@@ -25,8 +27,8 @@ export async function  POST(req) {
         const totalRooms = await RoomModel.countDocuments();
         const getRooms = await RoomModel.find(query).skip(skip).limit(4)
 
-        console.log(getRooms);
-        
+        // const getRooms = await RoomModel.find({})
+
 
         if (getRooms.length > 0) {
             return NextResponse.json({success: true, data: getRooms, totalRooms:totalRooms})

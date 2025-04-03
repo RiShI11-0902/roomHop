@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 
-export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setError }) {
+export default function Sidebar({ setSelectData, setOpen, setError, isLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleClick = (name, url) => {
@@ -51,9 +51,9 @@ export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setE
           >
             Browse Rooms
           </li>
-          <li
+          {
+            isLoggedIn ?  <li
             onClick={() => {
-              setislistingRoom(true);
               setOpen(true);
               setError("");
             }}
@@ -61,7 +61,9 @@ export default function Sidebar({ setSelectData, setOpen, setislistingRoom, setE
             tabIndex="0"
           >
             List your Room
-          </li>
+          </li> : ""
+          }
+         
         </ul>
       </aside>
     </>

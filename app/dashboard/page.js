@@ -3,10 +3,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import Sidebar from "../components/Sidebar";
-import { Loader } from "lucide-react";
+import { House, Loader } from "lucide-react";
 import DialogBox from "../components/DialogBox";
 import FilterBar from "../components/FilterBar";
 import { ShimmerEffect } from "../components/ShimmerEffect";
+import {  useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [selectData, setSelectData] = useState({
@@ -18,36 +19,41 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState();
-  const [islistingRoom, setislistingRoom] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [filters, setFilters] = useState({
     country: null,
     state: null,
     city: null,
-    rentMin: null,
     rentMax: null,
     genderPreference: null,
     currency: null,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalRooms, setTotalRooms] = useState();
   const [totalPages, settotalPages] = useState();
+  const { data: session } = useSession();
+
 
   const router = useRouter();
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get("/api/auth/protected"); // Call API to check JWT token
-        if (res.status !== 200) {
-          throw new Error("Unauthorized");
-        }
-      } catch (error) {
-        console.log("User not authenticated:", error);
-        router.push("/login"); // Redirect to login if not authenticated
-      }
-    };
+    if(!session){
+      router.push("/")
+    }
+    // const checkAuth = async () => {
+    //   try {
+    //     const res = await axios.get("/api/auth/protected");
+    //     if (res.status !== 200) {
+    //       throw new Error("Unauthorized");
+    //     }
+    //     setIsLoggedIn(true);
+    //   } catch (error) {
+    //     console.log("User not authenticated:", error);
+    //     // router.push("/login");
+    //     setIsLoggedIn(false);
+    //   }
+    // };
 
-    checkAuth();
+    // checkAuth();
   }, []);
 
   const fetchData = async () => {
@@ -59,9 +65,8 @@ export default function Dashboard() {
         setFilteredData(res.data.data);
         // setTotalRooms(res.data.totalRooms)
         settotalPages(Math.ceil(res.data.totalRooms / 4));
-        console.log(totalPages);
-        console.log(originalData);
-        console.log(filteredData);
+
+        console.log(res.data.data);
       } else {
         setError(res.data.message);
       }
@@ -74,34 +79,49 @@ export default function Dashboard() {
 
   const onFilterChange = (filter) => {
     console.log("called");
-    
-    console.log(filter);
-  
-    // Check if all filters are empty
-    const allFieldsEmpty = Object.values(filter).every(
-      (value) => !value || value.trim() === ""
-    );
 
-    console.log(allFieldsEmpty);
-    
-  
-    if (allFieldsEmpty) {
+    console.log(filters);
+
+    const { country, state, city, rentMax } = filters;
+
+    // Check if all filters are empty
+    // const allFieldsEmpty = Object.values(filter).every(
+    //   (value) => !value || value.trim() === ""
+    // );
+
+    // console.log(allFieldsEmpty);
+
+    if (
+      !filters.country &&
+      !filters.state &&
+      !filters.city &&
+      !filters.rentMax
+    ) {
       console.log("All fields are empty, resetting data", originalData);
+      setFilters({
+        country: null,
+        state: null,
+        city: null,
+        rentMax: null,
+        genderPreference: null,
+        currency: null,
+      });
       setFilteredData(originalData);
+      fetchData();
+      setError(null);
+      console.log(error);
       return;
     }
-  
+
     console.log("Fetching data with filters");
     fetchData(); // Call fetchData only when filters are applied
   };
-  
 
   useEffect(() => {
     fetchData();
   }, [selectData, currentPage]);
 
   const handlePageChange = (val) => {
-    // console.log(currentPage);
     console.log(totalPages);
 
     if (val == -1 && currentPage != 1) {
@@ -116,10 +136,10 @@ export default function Dashboard() {
     <>
       <section className="flex justify-between">
         <Sidebar
-          setislistingRoom={setislistingRoom}
           setOpen={setOpen}
           setSelectData={setSelectData}
           setError={setError}
+          isLoggedIn={isLoggedIn}
         />
         <div className="w-fit mx-auto p-5 flex-1">
           <div className="topBar p-10">
@@ -127,6 +147,8 @@ export default function Dashboard() {
               filters={filters}
               setFilters={setFilters}
               onFilterChange={onFilterChange}
+              isLoggedIn={isLoggedIn}
+              filteredData={filteredData}
             />
           </div>
           {error && <p>{error}</p>}
@@ -144,7 +166,9 @@ export default function Dashboard() {
                   }
                   className="max-w-80 cursor-pointer p-5 border border-gray-200 shadow-md shadow-gray-300 rounded-lg"
                 >
-                  <div className="mb-4">{"Icon"}</div>
+                  <div className="mb-4">
+                    <House />
+                  </div>
                   <h3 className="text-xl font-semibold text-[#363062] mb-3">
                     {ele.title}
                   </h3>

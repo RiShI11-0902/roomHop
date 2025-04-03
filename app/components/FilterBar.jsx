@@ -1,52 +1,60 @@
 import { Search, User2 } from "lucide-react";
-import { useState } from "react";
-import UserProfile from "./UserProfile"; // Assuming you have a UserProfile component
+import { useEffect, useState } from "react";
+import UserProfile from "./UserProfile";
+import Link from "next/link";
+import {  useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default function TopBar({ filters, handleFilterChange, onFilterChange, setOpenProfile }) {
-  const [openProfile, setOpenProfileState] = useState(false);
+export default function TopBar({ filters, setFilters, onFilterChange, setOpenProfile, isLoggedIn, filteredData }) {
+  
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilters((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/"); 
+    }
+  }, [session, router]);
 
   return (
     <div className="topBar bg-white shadow-lg rounded-lg p-5 flex flex-col md:flex-row items-center gap-4 w-full">
       
-      {/* Filters Section */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:gap-4 w-full">
-        {/* Country Input */}
-        <input
-          type="text"
-          name="country"
-          placeholder="Country"
-          value={filters.country}
-          onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+        {/* Country Select */}
+        <select name="country" value={filters.country || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a country</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.country}>{i.country}</option>
+          ))}
+        </select>
 
-        {/* State Input */}
-        <input
-          type="text"
-          name="state"
-          placeholder="State"
-          value={filters.state}
-          onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+        {/* State Select */}
+        <select name="state" value={filters.state || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a state</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.state}>{i.state}</option>
+          ))}
+        </select>
 
-        {/* City Input */}
-        <input
-          type="text"
-          name="city"
-          placeholder="City"
-          value={filters.city}
-          onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-full text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
+        {/* City Select */}
+        <select name="city" value={filters.city || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a city</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.city}>{i.city}</option>
+          ))}
+        </select>
       </div>
 
-      {/* Rent Range Filter with Currency Selection */}
-      <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
-        {/* Currency Selector */}
+      <div className="flex flex-row items-center gap-2 w-full md:w-auto">
+        {/* Currency Select */}
         <select
           name="currency"
-          value={filters.currency}
+          value={filters.currency || "INR"}
           onChange={handleFilterChange}
           className="border border-gray-300 px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
@@ -54,23 +62,12 @@ export default function TopBar({ filters, handleFilterChange, onFilterChange, se
           <option value="USD">$ (USD)</option>
         </select>
 
-        {/* Min Rent */}
-        <input
-          type="number"
-          name="rentMin"
-          placeholder="Min Price"
-          value={filters.rentMin}
-          onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
-        />
-        <span className="text-gray-600">-</span>
-
         {/* Max Rent */}
         <input
           type="number"
           name="rentMax"
           placeholder="Max Price"
-          value={filters.rentMax}
+          value={filters.rentMax || ""}
           onChange={handleFilterChange}
           className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
@@ -87,17 +84,20 @@ export default function TopBar({ filters, handleFilterChange, onFilterChange, se
 
       {/* User Profile Section */}
       <div
-        // className="user bg-gray-100 p-2 rounded-full cursor-pointer hover:bg-gray-200 transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none"
         tabIndex="0"
-        onClick={() => setOpenProfileState(true)}
-        onKeyDown={(e) => e.key === "Enter" && setOpenProfileState(true)}
+        onClick={() => setOpenProfile(true)}
+        onKeyDown={(e) => e.key === "Enter" && setOpenProfile(true)}
         role="button"
         aria-label="Open Profile"
       >
-        {/* <User2 className="text-gray-600" /> */}
-        <UserProfile setOpenProfile={setOpenProfileState} />
+        {session ? (
+        <UserProfile setOpenProfile={setOpenProfile} />
+        ) : (
+          <button onClick={() => signIn("google")} className="bg-blue-500 w-32 p-2 rounded-lg text-white hover:bg-blue-800">
+            {/* <Link href={"/register"}>Log In</Link> */}Sign In
+          </button>
+        )}
       </div>
-
     </div>
   );
 }

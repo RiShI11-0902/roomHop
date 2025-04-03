@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2, X, User2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { signOut, useSession } from "next-auth/react";
 
 export default function UserProfile() {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function UserProfile() {
   const [error, setError] = useState("");
   const [openBox, setOpenBox] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const { data: session } = useSession();
+
 
   // Detect screen size for hover vs. click behavior
   const isLargeScreen = typeof window !== "undefined" && window.innerWidth >= 768;
@@ -51,28 +54,36 @@ export default function UserProfile() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative" onMouseEnter={() => isLargeScreen && setShowDropdown(true)}
+      onMouseLeave={() => isLargeScreen && setShowDropdown(false)}>
       {/* User Icon */}
       <div
-        className="user bg-gray-100 p-2 rounded-full cursor-pointer hover:bg-gray-200 transition-all"
+        className="user p-2 rounded-full cursor-pointer hover:bg-gray-200 transition-all"
         onClick={() => !isLargeScreen && setShowDropdown(!showDropdown)} // Toggle dropdown only on small screens
-        onMouseEnter={() => isLargeScreen && setShowDropdown(true)}
-        onMouseLeave={() => isLargeScreen && setShowDropdown(false)}
+
         tabIndex="0"
       >
-        <User2 className="text-gray-600" />
+        <img src={session.user.image} alt="Profile" width={50} className="rounded-full" />
+
+        {/* <User2 className="text-gray-600" /> */}
       </div>
 
       {/* Profile Dropdown */}
       {showDropdown && (
         <div
-          className={`absolute ${
-            isLargeScreen ? "top-12 right-0" : "top-14 left-1/2 transform -translate-x-1/2"
-          } p-4 bg-white shadow-lg border rounded-xl w-44 transition-all`}
+          className={`absolute ${isLargeScreen ? "top-12 right-0" : "top-14 left-1/2 transform -translate-x-1/2"
+            } p-4 bg-white shadow-lg border rounded-xl w-44 transition-all`}
           onMouseEnter={() => isLargeScreen && setShowDropdown(true)}
-          onMouseLeave={() => isLargeScreen && setShowDropdown(false)}
+        // onMouseLeave={() => isLargeScreen && setShowDropdown(false)}
         >
           <ul className="text-center space-y-3">
+            <li>
+              {
+                session && <div className="flex justify-center space-x-3 items-center">
+                  <p>{session.user.name}</p>
+                </div>
+              }
+            </li>
             <li
               className="cursor-pointer hover:bg-gray-200 py-2 rounded-lg transition"
               onClick={() => setOpenBox(true)}
@@ -80,13 +91,16 @@ export default function UserProfile() {
             >
               My Rooms
             </li>
-            <li
+            <li className="cursor-pointer hover:bg-gray-200 py-2 rounded-lg transition">
+              <button onClick={() => signOut()}>Sign Out</button>
+            </li>
+            {/* <li
               className="cursor-pointer bg-red-500 text-white hover:bg-red-600 py-2 rounded-lg transition"
               onClick={logout}
               tabIndex="0"
             >
               Log Out
-            </li>
+            </li> */}
           </ul>
         </div>
       )}
