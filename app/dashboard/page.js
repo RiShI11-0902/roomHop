@@ -2,12 +2,12 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import { Card } from "@/components/ui/card";
 import Sidebar from "../components/Sidebar";
-import { Loader } from "lucide-react";
+import { House, Loader } from "lucide-react";
 import DialogBox from "../components/DialogBox";
 import FilterBar from "../components/FilterBar";
 import { ShimmerEffect } from "../components/ShimmerEffect";
+import {  useSession } from "next-auth/react";
 
 export default function Dashboard() {
   const [selectData, setSelectData] = useState({
@@ -19,37 +19,41 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState();
-  const [islistingRoom, setislistingRoom] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [filters, setFilters] = useState({
-    country: "",
-    state: "",
-    city: "",
-    rentMin: "",
-    rentMax: "",
-    genderPreference: "",
-    currency: "",
+    country: null,
+    state: null,
+    city: null,
+    rentMax: null,
+    genderPreference: null,
+    currency: null,
   });
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalRooms, setTotalRooms] = useState()
-  const [totalPages, settotalPages] = useState()
+  const [totalPages, settotalPages] = useState();
+  const { data: session } = useSession();
+
 
   const router = useRouter();
 
-  // 🔹 Check authentication when the component mounts
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const res = await axios.get("/api/auth/protected"); // Call API to check JWT token
-        if (res.status !== 200) {
-          throw new Error("Unauthorized");
-        }
-      } catch (error) {
-        console.log("User not authenticated:", error);
-        router.push("/login"); // Redirect to login if not authenticated
-      }
-    };
+    if(!session){
+      router.push("/")
+    }
+    // const checkAuth = async () => {
+    //   try {
+    //     const res = await axios.get("/api/auth/protected");
+    //     if (res.status !== 200) {
+    //       throw new Error("Unauthorized");
+    //     }
+    //     setIsLoggedIn(true);
+    //   } catch (error) {
+    //     console.log("User not authenticated:", error);
+    //     // router.push("/login");
+    //     setIsLoggedIn(false);
+    //   }
+    // };
 
-    checkAuth();
+    // checkAuth();
   }, []);
 
   const fetchData = async () => {
@@ -60,9 +64,9 @@ export default function Dashboard() {
         setOriginalData(res.data.data);
         setFilteredData(res.data.data);
         // setTotalRooms(res.data.totalRooms)
-        settotalPages(Math.ceil(res.data.totalRooms / 4))
-        console.log(totalPages);
-        
+        settotalPages(Math.ceil(res.data.totalRooms / 4));
+
+        console.log(res.data.data);
       } else {
         setError(res.data.message);
       }
@@ -74,32 +78,43 @@ export default function Dashboard() {
   };
 
   const onFilterChange = (filter) => {
-    console.log(filter);
+    console.log("called");
+
+    console.log(filters);
+
+    const { country, state, city, rentMax } = filters;
+
+    // Check if all filters are empty
+    // const allFieldsEmpty = Object.values(filter).every(
+    //   (value) => !value || value.trim() === ""
+    // );
+
+    // console.log(allFieldsEmpty);
 
     if (
-      filter.country == "" &&
-      filter.state == "" &&
-      filter.city == "" &&
-      filter.rentMax &&
-      filter.currency
+      !filters.country &&
+      !filters.state &&
+      !filters.city &&
+      !filters.rentMax
     ) {
-      console.log(originalData);
-
+      console.log("All fields are empty, resetting data", originalData);
+      setFilters({
+        country: null,
+        state: null,
+        city: null,
+        rentMax: null,
+        genderPreference: null,
+        currency: null,
+      });
       setFilteredData(originalData);
+      fetchData();
+      setError(null);
+      console.log(error);
       return;
     }
 
-    // const newData = filteredData.filter((ele) => {
-    //   return (
-    //     (filter.country && ele.country?.toLowerCase() === filter.country.toLowerCase()) ||
-    //     (filter.state && ele.state?.toLowerCase() === filter.state.toLowerCase()) ||
-    //     (filter.city && ele.city?.toLowerCase() === filter.city.toLowerCase())
-    //   );
-    // });
-
-    // console.log(newData);
-
-    setFilteredData(newData);
+    console.log("Fetching data with filters");
+    fetchData(); // Call fetchData only when filters are applied
   };
 
   useEffect(() => {
@@ -107,9 +122,7 @@ export default function Dashboard() {
   }, [selectData, currentPage]);
 
   const handlePageChange = (val) => {
-    // console.log(currentPage);
     console.log(totalPages);
-
 
     if (val == -1 && currentPage != 1) {
       console.log(currentPage);
@@ -123,10 +136,10 @@ export default function Dashboard() {
     <>
       <section className="flex justify-between">
         <Sidebar
-          setislistingRoom={setislistingRoom}
           setOpen={setOpen}
           setSelectData={setSelectData}
           setError={setError}
+          isLoggedIn={isLoggedIn}
         />
         <div className="w-fit mx-auto p-5 flex-1">
           <div className="topBar p-10">
@@ -134,6 +147,8 @@ export default function Dashboard() {
               filters={filters}
               setFilters={setFilters}
               onFilterChange={onFilterChange}
+              isLoggedIn={isLoggedIn}
+              filteredData={filteredData}
             />
           </div>
           {error && <p>{error}</p>}
@@ -144,50 +159,56 @@ export default function Dashboard() {
             ) : (
               !error &&
               filteredData?.map((ele, index) => (
-                <Card
+                <div
                   key={index}
                   onClick={() =>
                     router.push(`/roommates/${ele._id ? ele._id : index}`)
                   }
-                  className="max-w-80 cursor-pointer p-5"
+                  className="max-w-80 cursor-pointer p-5 border border-gray-200 shadow-md shadow-gray-300 rounded-lg"
                 >
-                  <div className="mb-4">{"Icon"}</div>
+                  <div className="mb-4">
+                    <House />
+                  </div>
                   <h3 className="text-xl font-semibold text-[#363062] mb-3">
                     {ele.title}
                   </h3>
                   <p className="text-[#363062]">{ele.description}</p>
-                </Card>
+                </div>
               ))
             )}
           </div>
 
-         {
-          filteredData?.length > 0 &&  <div className="flex items-center justify-center gap-4 mt-5">
-          { currentPage != 1 ?
-            <button
-              className={`px-4 py-2 rounded-lg border ${
-                currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
-              }`}
-              onClick={() => handlePageChange(-1)}
-            >
-              Previous
-            </button> : ""
-          }
+          {filteredData?.length > 0 && (
+            <div className="flex items-center justify-center gap-4 mt-5">
+              {currentPage != 1 ? (
+                <button
+                  className={`px-4 py-2 rounded-lg border ${
+                    currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                  onClick={() => handlePageChange(-1)}
+                >
+                  Previous
+                </button>
+              ) : (
+                ""
+              )}
 
-          <p className="text-lg">Current Page: {currentPage}</p>
+              <p className="text-lg">Current Page: {currentPage}</p>
 
-          { totalPages != currentPage ?
-          <button
-            className={`px-4 py-2 rounded-lg border ${
-              currentPage === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
-            }`}
-            onClick={() => handlePageChange(1)}
-          >
-            Next
-          </button> : " "
-          }
-        </div>
-         }
+              {totalPages != currentPage ? (
+                <button
+                  className={`px-4 py-2 rounded-lg border ${
+                    currentPage === 2 ? "bg-blue-500 text-white" : "bg-gray-200"
+                  }`}
+                  onClick={() => handlePageChange(1)}
+                >
+                  Next
+                </button>
+              ) : (
+                " "
+              )}
+            </div>
+          )}
         </div>
       </section>
       <DialogBox open={open} setOpen={setOpen} />

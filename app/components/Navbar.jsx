@@ -14,21 +14,16 @@ export default function Navbar() {
       <div className="container mx-auto px-6 py-4 flex justify-around items-center">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold text-[#F99417]">
-          Roomsy
+          Room Hop
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
-          <Link href="#" className="hover:text-[#F99417] transition">Find Roommates</Link>
-          <Link href="#" className="hover:text-[#F99417] transition">List Your Space</Link>
-          <Link href="#" className="hover:text-[#F99417] transition">About</Link>
-          <Link href="#" className="hover:text-[#F99417] transition">Contact</Link>
+          <Link href="/dashboard" className="hover:text-[#F99417] transition">Find Roommates</Link>
+          {/* <Link href="#" className="hover:text-[#F99417] transition">List Your Space</Link> */}
+          <Link href="/about" className="hover:text-[#F99417] transition">About</Link>
+          {/* <Link href="#" className="hover:text-[#F99417] transition">Contact</Link> */}
         </div>
-
-        {/* CTA Button */}
-        <p onClick={()=> router.push("/login")} className="hidden md:block bg-[#F99417] text-[#363062] px-6 py-2 rounded-lg font-semibold hover:bg-[#F5F5F5] transition">
-          Get Started
-        </p>
 
         {/* Mobile Menu Button */}
         <button className="md:hidden text-white" onClick={() => setIsOpen(!isOpen)}>
@@ -39,13 +34,10 @@ export default function Navbar() {
       {/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden bg-[#4D4C7D] text-white text-center p-6 space-y-4">
-          <Link href="#" className="block hover:text-[#F99417] transition">Find Roommates</Link>
-          <Link href="#" className="block hover:text-[#F99417] transition">List Your Space</Link>
-          <Link href="#" className="block hover:text-[#F99417] transition">About</Link>
-          <Link href="#" className="block hover:text-[#F99417] transition">Contact</Link>
-          <Link href="#" className="block bg-[#F99417] text-[#363062] px-6 py-2 rounded-lg font-semibold hover:bg-[#F5F5F5] transition">
-            Get Started
-          </Link>
+          <Link href="/dashboard" className="block hover:text-[#F99417] transition">Find Roommates</Link>
+          {/* <Link href="#" className="block hover:text-[#F99417] transition">List Your Space</Link> */}
+          <Link href="/about" className="block hover:text-[#F99417] transition">About</Link>
+          {/* <Link href="#" className="block hover:text-[#F99417] transition">Contact</Link> */}
         </div>
       )}
     </nav>

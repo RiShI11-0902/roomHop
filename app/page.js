@@ -1,13 +1,24 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+"use client";
 import { Users, Shield, Search } from "lucide-react";
-import Image from "next/image";
 import Navbar from "./components/Navbar";
+import Link from "next/link";
+import { signIn, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import {} from 'lucide-react'
 
 export default function Home() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (session) {
+      router.push("/dashboard"); // Redirect after login
+    }
+  }, [session, router]);
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="min-h-screen bg-gradient-to-br from-[#363062] to-[#4D4C7D]">
         {/* Hero Section */}
         <section className="relative h-screen flex items-center justify-center px-4">
@@ -18,50 +29,61 @@ export default function Home() {
                 <span className="text-[#F99417]">Roommate</span> Match
               </h1>
               <p className="text-xl text-[#F5F5F5] mb-8">
-                Smart matching algorithms, verified profiles, and a community of
-                like-minded people ready to share their space with you.
+                {/* Smart matching algorithms, verified profiles, and a community of
+                like-minded people ready to share their space with you. */}
+                Find and share spaces around the world within your budget.
               </p>
               <div className="flex gap-4 justify-center">
-                <Button
+                {/* <Link
+                  href={"/dashboard"}
                   size="lg"
-                  className="bg-[#F99417] hover:bg-[#F5F5F5] text-[#363062] px-8"
+                  className="bg-[#F99417] py-3 rounded-2xl hover:bg-[#F5F5F5] text-[#363062] px-8"
                 >
                   Find Roommates
-                </Button>
-                <Button
+                </Link>
+                <button
                   size="lg"
                   variant="outline"
-                  className="text-[#363062] bg-[#F99417] border-[#F99417] hover:bg-[#F5F5F5] "
+                  className="text-[#363062] px-8 rounded-2xl bg-[#F99417] border-[#F99417] hover:bg-[#F5F5F5] "
                 >
                   List Your Space
-                </Button>
+                </button> */}
+                <button className="cursor-pointer hover:bg-blue-200 p-4 text-[#F99417] py-2 rounded-lg transition" onClick={() => signIn("google")}>
+                  Sign In with 
+                </button>
+                {/* <Link href={"/register"}
+                  
+                  className="hidden md:block bg-[#F99417] text-[#363062] px-6 py-2 rounded-lg font-semibold hover:bg-[#F5F5F5] transition cursor-pointer"
+                >
+                  Get Started
+                </Link> */}
               </div>
             </div>
           </div>
         </section>
 
         {/* Features Section */}
-        <section className="py-20 ">
+        {/* <section className="py-20 ">
           <div className="container mx-auto px-4">
             <h2 className="text-4xl font-bold text-center text-[#F5F5F5] mb-16">
               Why Choose RoomMatch?
             </h2>
             <div className="grid md:grid-cols-3 gap-8">
               {features.map((feature, index) => (
-                <Card key={index} className="bg-[#F5F5F5] border-none p-6">
+                <div key={index} className="bg-[#F5F5F5] border-none p-6">
                   <div className="mb-4">{feature.icon}</div>
                   <h3 className="text-xl font-semibold text-[#363062] mb-3">
                     {feature.title}
                   </h3>
                   <p className="text-[#363062]">{feature.description}</p>
-                </Card>
+                </div>
               ))}
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* CTA Section */}
-        <section className="py-20 bg-[#F99417]">
+        {/* <section className="py-20 bg-[#F99417]">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-4xl font-bold text-[#363062] mb-6">
               Ready to Find Your Perfect Roommate?
@@ -70,14 +92,14 @@ export default function Home() {
               Join thousands of happy roommates who found their perfect match
               through RoomMatch.
             </p>
-            <Button
+            <Link href={"/register"}
               size="lg"
-              className="bg-[#363062] text-[#F5F5F5] hover:bg-[#4D4C7D] px-8"
+              className="bg-[#363062] cursor-pointer text-[#F5F5F5] hover:bg-[#4D4C7D] px-8"
             >
               Get Started Now
-            </Button>
+            </Link>
           </div>
-        </section>
+        </section> */}
       </div>
     </>
   );

@@ -1,114 +1,103 @@
-import { useState } from "react";
-import { User2Icon, Search } from "lucide-react";
-import { UserProfile } from "./UserProfile";
+import { Search, User2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import UserProfile from "./UserProfile";
+import Link from "next/link";
+import {  useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-export default function FilterBar({ onFilterChange, filters, setFilters }) {
-  const [openProfile, setOpenProfile] = useState(false);
-
-  // Handle input changes but don't apply filters yet
+export default function TopBar({ filters, setFilters, onFilterChange, setOpenProfile, isLoggedIn, filteredData }) {
+  
   const handleFilterChange = (e) => {
     const { name, value } = e.target;
     setFilters((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Trigger filter when Search button is clicked
-  const handleSearch = () => {
-    onFilterChange(filters);
-  };
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!session) {
+      router.push("/"); 
+    }
+  }, [session, router]);
 
   return (
-    <div className="topBar p-5 bg-white shadow-lg rounded-lg flex flex-col md:flex-row items-center justify-between gap-4">
-      {/* 🌍 Country Filter */}
-      <input
-        type="text"
-        name="country"
-        placeholder="Country"
-        value={filters.country}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+    <div className="topBar bg-white shadow-lg rounded-lg p-5 flex flex-col md:flex-row items-center gap-4 w-full">
+      
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:gap-4 w-full">
+        {/* Country Select */}
+        <select name="country" value={filters.country || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a country</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.country}>{i.country}</option>
+          ))}
+        </select>
 
-      {/* 🏙️ State Filter */}
-      <input
-        type="text"
-        name="state"
-        placeholder="State"
-        value={filters.state}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+        {/* State Select */}
+        <select name="state" value={filters.state || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a state</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.state}>{i.state}</option>
+          ))}
+        </select>
 
-      {/* 🏡 City Filter */}
-      <input
-        type="text"
-        name="city"
-        placeholder="City"
-        value={filters.city}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg w-32 text-sm"
-      />
+        {/* City Select */}
+        <select name="city" value={filters.city || ""} onChange={handleFilterChange} className="p-2 border rounded">
+          <option value="" >Select a city</option>
+          {filteredData?.map((i, k) => (
+            <option key={k} value={i.city}>{i.city}</option>
+          ))}
+        </select>
+      </div>
 
-      {/* 💰 Rent Range Filter with Currency Selection */}
-      <div className="flex items-center gap-2">
-        {/* Currency Selector */}
+      <div className="flex flex-row items-center gap-2 w-full md:w-auto">
+        {/* Currency Select */}
         <select
           name="currency"
-          value={filters.currency}
+          value={filters.currency || "INR"}
           onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg text-sm"
+          className="border border-gray-300 px-3 py-2 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         >
           <option value="INR">₹ (INR)</option>
           <option value="USD">$ (USD)</option>
-          <option value="EUR">€ (EUR)</option>
-          <option value="GBP">£ (GBP)</option>
         </select>
-
-        {/* Min Rent */}
-        <input
-          type="number"
-          name="rentMin"
-          placeholder="Min Price"
-          value={filters.rentMin}
-          onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
-        />
-        <span className="text-gray-600">-</span>
 
         {/* Max Rent */}
         <input
           type="number"
           name="rentMax"
           placeholder="Max Price"
-          value={filters.rentMax}
+          value={filters.rentMax || ""}
           onChange={handleFilterChange}
-          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm"
+          className="border border-gray-300 px-3 py-2 rounded-lg w-24 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none"
         />
       </div>
 
-      <select
-        name="genderPreference"
-        value={filters.genderPreference}
-        onChange={handleFilterChange}
-        className="border border-gray-300 px-3 py-2 rounded-lg"
-      >
-        <option value="">Any Gender</option>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
-      </select>
-
+      {/* Search Button */}
       <button
-        onClick={handleSearch}
-        className="bg-blue-500 text-white px-4 py-2 rounded-lg flex items-center gap-2"
+        onClick={() => onFilterChange(filters)}
+        className="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-all focus:ring-2 focus:ring-blue-500 focus:outline-none"
       >
         <Search size={18} />
         Search
       </button>
 
-      <div className="user bg-gray-100 p-2 rounded-full cursor-pointer">
-        <User2Icon onClick={() => setOpenProfile(true)} className="text-gray-600" />
+      {/* User Profile Section */}
+      <div
+        tabIndex="0"
+        onClick={() => setOpenProfile(true)}
+        onKeyDown={(e) => e.key === "Enter" && setOpenProfile(true)}
+        role="button"
+        aria-label="Open Profile"
+      >
+        {session ? (
+        <UserProfile setOpenProfile={setOpenProfile} />
+        ) : (
+          <button onClick={() => signIn("google")} className="bg-blue-500 w-32 p-2 rounded-lg text-white hover:bg-blue-800">
+            {/* <Link href={"/register"}>Log In</Link> */}Sign In
+          </button>
+        )}
       </div>
-
-      {openProfile && <UserProfile setOpenProfile={setOpenProfile} />}
     </div>
   );
 }
