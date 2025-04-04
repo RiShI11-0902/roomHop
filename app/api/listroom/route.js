@@ -3,6 +3,8 @@ import RoomModel from "@/app/models/rooms";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from "jsonwebtoken";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   try {
@@ -10,15 +12,19 @@ export async function POST(req) {
 
     const body = await req.json();
 
-    const cookie = await cookies();
-    const token = cookie.get("token")?.value;
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    console.log(session);
+    
+    // const cookie = await cookies();
+    // const token = cookie.get("token")?.value;
 
-    // Verify JWT token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    // if (!token) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
+
+    // // Verify JWT token
+    // const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const {
       listedBy,
@@ -61,7 +67,7 @@ export async function POST(req) {
       state,
       city,
       isRoommateRequest: isRoommateRequest,
-      createdBy: decoded.id,
+      createdBy: session?.user?.email,
       geoCode: geoCode,
       images: images
     });

@@ -15,6 +15,9 @@ export default function UserProfile() {
   const [showDropdown, setShowDropdown] = useState(false);
   const { data: session } = useSession();
 
+  console.log(session.user.email);
+  
+
 
   // Detect screen size for hover vs. click behavior
   const isLargeScreen = typeof window !== "undefined" && window.innerWidth >= 768;
@@ -22,7 +25,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUserRooms = async () => {
       try {
-        const response = await axios.get("/api/user-rooms");
+        const response = await axios.post("/api/user-rooms", {email: session.user.email});
         setUserRooms(response.data.rooms);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load rooms.");
@@ -63,7 +66,7 @@ export default function UserProfile() {
 
         tabIndex="0"
       >
-        <img src={session.user.image} alt="Profile" width={50} className="rounded-full" />
+        <img src={session?.user?.image} alt="Profile" width={50} className="rounded-full" />
 
         {/* <User2 className="text-gray-600" /> */}
       </div>
@@ -80,7 +83,7 @@ export default function UserProfile() {
             <li>
               {
                 session && <div className="flex justify-center space-x-3 items-center">
-                  <p>{session.user.name}</p>
+                  <p>{session.user.name.split(" ")[0].toLocaleUpperCase()}</p>
                 </div>
               }
             </li>
