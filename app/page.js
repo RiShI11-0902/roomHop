@@ -50,8 +50,8 @@ export default function Home() {
                 >
                   List Your Space
                 </button> */}
-                <button className="cursor-pointer hover:bg-blue-200 p-4 text-[#F99417] py-2 rounded-lg transition" onClick={() => signIn("google")}>
-                  Sign In with <AiOutlineGoogle />
+                <button className="cursor-pointer hover:bg-blue-200 p-4 w-fit flex items-center justify-center space-x-2 text-[#F99417] py-2 rounded-lg transition" onClick={() => signIn("google")}>
+                  <p>Sign In with</p> <AiOutlineGoogle />
                 </button>
                 {/* <Link href={"/register"}
                   

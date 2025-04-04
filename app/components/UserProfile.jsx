@@ -25,7 +25,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUserRooms = async () => {
       try {
-        const response = await axios.post("/api/user-rooms", {email: session.user.email});
+        const response = await axios.post("/api/user-rooms", {userEmail: session.user.email});
         setUserRooms(response.data.rooms);
       } catch (err) {
         setError(err.response?.data?.message || "Failed to load rooms.");

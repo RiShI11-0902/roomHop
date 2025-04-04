@@ -1,5 +1,3 @@
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
 import { NextResponse } from "next/server";
 import RoomModel from "@/app/models/rooms";
 import connection from "@/app/dbConfig/db";
@@ -8,12 +6,12 @@ export async function POST(req) {
   try {
     await connection();
 
-    const {email} = await req.json()
+    const {userEmail} = await req.json()
 
-    console.log(email);
+    console.log(userEmail);
 
-    if (email) {
-      const findRooms = await RoomModel.find({ createdBy: email });
+    if (userEmail) {
+      const findRooms = await RoomModel.find({ createdBy: userEmail });
       console.log("Rooms are" , findRooms);
       return NextResponse.json({ success: true, rooms: findRooms });
     }

@@ -5,6 +5,7 @@ import FormRenderer from "./FormRenderer";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { Loader } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function DialogBox({ setOpen, open }) {
   if (!open) return null;
@@ -12,6 +13,8 @@ export default function DialogBox({ setOpen, open }) {
   const [selectedTab, setselectedTab] = useState("Your Details")
   const [loading, setLoading] = useState()
   const router = useRouter()
+    const { data: session } = useSession();
+  
 
   const [formData, setFormData] = useState({
     email: "",
@@ -106,7 +109,7 @@ export default function DialogBox({ setOpen, open }) {
     // .then((data)=> formData.images = data.data.url)
 
     try {
-      const response = await axios.post("/api/listroom", formData)
+      const response = await axios.post("/api/listroom", {formData,userEmail:session.user.email})
 
       if (response.status == 200) {
         setLoading(false)
