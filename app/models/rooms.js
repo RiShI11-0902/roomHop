@@ -20,7 +20,7 @@ const RoomSchema = new Schema(
     postedAt: { type: Date, default: Date.now }, 
     isRoommateRequest: {type: Boolean},
     ageRange:{type: String},
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    createdBy: {type: String},
     geoCode:{
       type:[Number]
     },

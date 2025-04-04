@@ -3,11 +3,15 @@
 import { useState } from "react";
 import FormRenderer from "./FormRenderer";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { Loader } from "lucide-react";
 
 export default function DialogBox({ setOpen, open }) {
   if (!open) return null;
 
   const [selectedTab, setselectedTab] = useState("Your Details")
+  const [loading, setLoading] = useState()
+  const router = useRouter()
 
   const [formData, setFormData] = useState({
     email: "",
@@ -56,38 +60,46 @@ export default function DialogBox({ setOpen, open }) {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
 
     console.log(formData, "formdata");
 
 
-    const { listedBy, email, contact, address, rent, description, images, ageRange, currency } = formData;
+    const { listedBy, contact, address, rent, images, currency } = formData;
+
+    console.log({ listedBy, contact, address, rent, currency }, "compulsory");
+
 
     // Fields that must be filled
-    if (!listedBy || !email || !contact || !address || !rent || !description || !currency) {
+    if (listedBy === "" || contact === "" || address === "" || rent === "" || currency === "") { 
       alert("Please fill in all required fields.");
+      setLoading(false);
       return;
     }
 
-    const formDataToSend = new FormData();
-    const cld_img = new FormData()
+    if (images != null) {
+      const formDataToSend = new FormData();
+      const cld_img = new FormData()
 
-    Object.keys(formData).forEach((key) => {
-      if (key === "images") {
-        if (images) {
-          Array.from(images).forEach((file) => {
-            // formDataToSend.append("images", file);
-            cld_img.append("file", file)
-          });
+      Object.keys(formData).forEach((key) => {
+        if (key === "images") {
+          if (images) {
+            Array.from(images).forEach((file) => {
+              // formDataToSend.append("images", file);
+              cld_img.append("file", file)
+            });
+          }
+        } else {
+          formDataToSend.append(key, formData[key]);
         }
-      } else {
-        formDataToSend.append(key, formData[key]);
-      }
-    });
+      });
 
-    cld_img.append('upload_preset', 'roomhop')
-    cld_img.append('cloud_name', "dogievntz")
+      cld_img.append('upload_preset', 'roomhop')
+      cld_img.append('cloud_name', "dogievntz")
 
-    const sendImg = await axios.post("https://api.cloudinary.com/v1_1/dogievntz/image/upload", cld_img).then((data) => formData.images = data?.data?.url)
+      const sendImg = await axios.post("https://api.cloudinary.com/v1_1/dogievntz/image/upload", cld_img).then((data) => formData.images = data?.data?.url)
+    }
+
     // const uploadUrl = await sendImg.json()
     // console.log(uploadUrl);
 
@@ -97,6 +109,8 @@ export default function DialogBox({ setOpen, open }) {
       const response = await axios.post("/api/listroom", formData)
 
       if (response.status == 200) {
+        setLoading(false)
+        router.refresh()
         setFormData({
           email: "",
           gender: "",
@@ -118,12 +132,13 @@ export default function DialogBox({ setOpen, open }) {
           city: "",
           currency: ""
         });
+
       } else {
         alert("Failed to submit.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert("Please Enter All Feilds")
+      // alert("Please Enter All Feilds")
     }
     setOpen(false)
   };
@@ -170,9 +185,9 @@ export default function DialogBox({ setOpen, open }) {
           <button
             onClick={handleSubmit}
             type="submit"
-            className="px-3 py-1 bg-green-600 text-white rounded-lg"
+            className="px-3 py-1 w-20 bg-green-600 text-white rounded-lg"
           >
-            Submit
+            {loading ? <Loader className="animate-spin mx-auto" /> : "Submit"}
           </button>
         </div>
       </div>

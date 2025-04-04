@@ -5,7 +5,9 @@ import Link from "next/link";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import {} from 'lucide-react'
+// import {} from 'lucide-react'
+import { AiOutlineGoogle } from 'react-icons/ai'
+
 
 export default function Home() {
   const { data: session, status } = useSession();
@@ -49,7 +51,7 @@ export default function Home() {
                   List Your Space
                 </button> */}
                 <button className="cursor-pointer hover:bg-blue-200 p-4 text-[#F99417] py-2 rounded-lg transition" onClick={() => signIn("google")}>
-                  Sign In with 
+                  Sign In with <AiOutlineGoogle />
                 </button>
                 {/* <Link href={"/register"}
                   

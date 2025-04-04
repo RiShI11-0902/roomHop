@@ -1,9 +1,11 @@
 "use client";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
+import {  useSession } from "next-auth/react";
 
 export default function Sidebar({ setSelectData, setOpen, setError, isLoggedIn }) {
   const [isOpen, setIsOpen] = useState(false);
+  const { data: session } = useSession();
 
   const handleClick = (name, url) => {
     setSelectData({ name, url });
