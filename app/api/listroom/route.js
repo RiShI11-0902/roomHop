@@ -12,9 +12,14 @@ export async function POST(req) {
 
     const body = await req.json();
 
-    const session = await getServerSession(authOptions);
+    console.log(body);
 
-    console.log(session);
+    const { formData, userEmail } = body;
+    
+
+    // const session = await getServerSession(authOptions);
+
+    // console.log(session);
     
     // const cookie = await cookies();
     // const token = cookie.get("token")?.value;
@@ -45,7 +50,7 @@ export async function POST(req) {
       city,
       images,
       currency
-    } = body;
+    } = formData;
 
      
       console.log(currency);
@@ -67,7 +72,7 @@ export async function POST(req) {
       state,
       city,
       isRoommateRequest: isRoommateRequest,
-      createdBy: session?.user?.email,
+      createdBy: userEmail,
       geoCode: geoCode,
       images: images
     });

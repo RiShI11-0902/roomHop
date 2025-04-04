@@ -54,7 +54,7 @@ export default function Sidebar({ setSelectData, setOpen, setError, isLoggedIn }
             Browse Rooms
           </li>
           {
-            isLoggedIn ?  <li
+            session ?  <li
             onClick={() => {
               setOpen(true);
               setError("");
