@@ -7,9 +7,7 @@ export async function POST(req) {
     await connection();
 
     const {userEmail} = await req.json()
-
-    console.log(userEmail);
-
+    
     if (userEmail) {
       const findRooms = await RoomModel.find({ createdBy: userEmail });
       console.log("Rooms are" , findRooms);
