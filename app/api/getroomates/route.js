@@ -6,8 +6,7 @@ export async function POST(req) {
   try {
     await connection();
     const {filters,currentPage} = await req.json()
-     console.log(filters,currentPage);
-     
+
     const query = {}
 
     if(filters.country) query.country =  filters.country
@@ -15,9 +14,6 @@ export async function POST(req) {
     if(filters.city) query.city =  filters.city
     if(filters.rentMax) query.rent =  filters.rentMax
     if(filters.currency) query.currency =  filters.currency
-
-
-    console.log("query is",query);
     
     query.isRoommateRequest = true
     

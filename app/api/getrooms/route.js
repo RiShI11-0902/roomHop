@@ -7,8 +7,6 @@ export async function  POST(req) {
         await connection()
 
         const {filters,currentPage} = await req.json()
-
-        // console.log(currentPage);
         
         const query = {}
 
